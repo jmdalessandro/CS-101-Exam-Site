@@ -1,0 +1,123 @@
+/*login page css*/
+
+.login_title {
+  color: red;
+  transform: translateX(30%);
+}
+
+#login_btn {
+  transform: translateX(75px);
+}
+
+.login_form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 5px solid;
+  margin: auto;
+  padding: 5px;
+}
+
+/*teacher css page*/
+.navigation {
+  background-color: lightgrey;
+  margin: auto;
+  margin-bottom: 10px;
+  padding: 20px;
+}
+
+li {
+  display: inline;
+}
+
+#navigation-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.welcome-teacher {
+  display: block;
+  background-color: blue;
+  color: white;
+}
+
+.row {
+  display: flex;
+  height: 100%;
+}
+
+/* left column */
+
+.exam-editor {
+  background-color: tomato;
+  height: 100%;
+  width: 50%;
+  display: block;
+}
+
+#create-question {
+  display: none;
+
+}
+#create-exam { /*shows up first when laoded*/
+  display: block;
+}
+#submit-question {
+  display: block;
+}
+
+#submit-exam {
+  float: right;
+  position: relative;
+}
+/* right column */
+
+#submit-question { /*button style*/
+  position: relative;
+  float: right;
+  left: 0;
+  bottom: 0;
+}
+
+#question-databank {
+  display: none;
+  background-color: cyan;
+  flex: 50%;
+  height: 100%;
+}
+#submitQuestionPlaceholder {
+  display: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+.selected {
+  color: red;
+}
+
+#filter-btn {
+  position: relative;
+  float: right;
+}
+
+#exam-preview { /*shows up first when laoded*/
+  display: block;
+  background-color: cyan;
+  flex: 50%;
+  height: 100%;
+}
+
+#refresh-preview {
+  position: relative;
+  float: right;
+  right: 0;
+  transform: translateY(-80px);
+}

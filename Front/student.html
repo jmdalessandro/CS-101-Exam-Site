@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Student Home</title>
+    <link rel="stylesheet" href="css/student.css">
+  </head>
+  <body onload="getExam();getResults()">
+    <div id="nav-bar">
+      <ul>
+        <li><button type="button" id="student-home" onclick="window.location.href='http://web.njit.edu/~hy276/beta/front/student.html'">Home</button></li>
+        <li><button type="button" id="take-test-nav" onclick="SwapDivs('welcome-screen','exam-screen');">Take Exam</button></li>
+        <li><button type="button" id="exam-results-nav" onclick="SwapDivs('welcome-screen', 'results-screen');">Review Exam</button></li>
+      </ul>
+    </div>
+    <div id="welcome-screen">
+      <h1>Welcome Student!</h1>
+    </div>
+    <div id="exam-screen">
+      <h1>Exams</h1>
+      <div id="exam">
+		  
+      </div>
+    </div>
+    <div id="results-screen">
+      <h1>Review Exam</h1>
+      <div id="exam-results">
+
+      </div>
+    </div>
+
+
+
+
+
+    <script type="text/javascript" src="js/student.js">
+
+    </script>
+  </body>
+</html>

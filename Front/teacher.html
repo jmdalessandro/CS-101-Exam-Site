@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hey Teacher! Make an exam here!</title>
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body onload="showQuestions();showQuestionTblChecks();" >
+    <div class="navigation">
+      <ul id="navigation-list">
+        <li id="make-exam-nav">
+          <button type="button" onclick="SwapDivs('create-question', 'create-exam');SwapDivs('question-databank', 'exam-preview');display('submit-question-wrapper')">Create Question</button>
+        </li>
+        <li id="create-question-nav">
+          <button type="button" onclick="SwapDivs('exam-preview', 'question-databank');SwapDivs('create-exam', 'create-question');">Create Exam</button>
+        </li>
+        <li><a href="exams.html">Current Exams</a></li>
+        <li><a href="releaseGrades.html">Release Grades</a></li>
+        <li><a href="login.html">Logout</a></li>
+      </ul>
+    </div>
+    <div class="welcome-teacher">
+      <h1 style="font-size: bold;">Welcome Teacher</h1>
+    </div>
+    <!-- left column -->
+  <div class="row">
+    <div class="exam-editor">
+      <h1>Edit Exam here</h1>
+      <!-- will be create question and adding questions via nav bar -->
+        <div id="create-question">
+          <h3>create a question</h3>
+            <label for="topic">Question Topic</label><br>
+            <input type="text" id="topic" autocomplete="off" required><br>
+            <label for="question_name">Question Name</label><br>
+            <input type="text" id="question_name" autocomplete="off" required><br>
+            <label for="question_text">Question</label><br>
+            <input type="text" id="question_text" autocomplete="off" required><br>
+            <label for="difficulty">question difficulty</label><br>
+            <select id="difficulty">
+              <option value="" disabled selected autocomplete="off">Select a difficulty</option>
+              <option value="easy">easy</option>
+              <option value="medium">medium</option>
+              <option value="hard">hard</option>
+            </select><br>
+            <label for="input1">Test input 1</label><br>
+            <input type="text" id="input1" autocomplete="off" required><br>
+            <label for="output1">Expected output 1</label><br>
+            <input type="text" id="output1" autocomplete="off" required><br>
+            <label for="input2">Test input 2</label><br>
+            <input type="text" id="input2" autocomplete="off" required><br>
+            <label for="output2">Expected output 2</label><br>
+            <input type="text" id="output2" autocomplete="off" required><br>
+            <button type="button" id="submit-question" onclick="return submitQuestion()">Submit question</button>
+    </div>
+    <div id="create-exam" onload="addFields()">
+    </div>
+    <div id="submit-exam-wrapper">
+      <button type="submit" id="submit-exam" onclick="addQuestionToExam()">Submit</button>
+    </div>
+</div>
+    <!-- right column -->
+    <div id="question-databank">
+      <h1>Databank</h1>
+      <button type="submit" id="refresh-preview" onclick="return showQuestions()">Refresh Databank</button> <!-- reloads the databank info -->
+      <label for="sort-topic">Topic</label>
+      <input type="text" id="sort-topic">
+      <label for="sort-difficulty"></label>
+      <select id="sort-difficulty">
+        <option value="" disabled selected>Filter by difficulty</option>
+        <option value="easy">easy</option>
+        <option value="medium">medium</option>
+        <option value="hard">hard</option>
+      </select>
+      <label for="sort-keyword">keyword search</label>
+      <input type="text" id="sort-keyword">
+      <button type="submit" id="filter-btn">Filter</button>
+      <div id="question-table">
+
+      </div>
+    </div>
+    <div id="exam-preview">
+      <h1>Exam Preview</h1>
+      <div id="preview-table">
+
+      </div>
+    </div>
+</div>
+    <script type="text/javascript" src="js/teacher.js">
+
+    </script>
+  </body>
+</html>

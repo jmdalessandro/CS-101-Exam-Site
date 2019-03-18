@@ -1,0 +1,22 @@
+li {
+  display: inline;
+}
+
+#nav-bar {
+  background: lightgrey;
+  height: 50px;
+}
+#welcome-screen {
+  display: block;
+}
+#exam-screen {
+  display: none;
+}
+
+#results-screen {
+  display: none;
+}
+
+table, th, tr, td {
+  border: 1px solid black;
+}

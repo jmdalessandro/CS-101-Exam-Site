@@ -1,24 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <style media="screen">
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      table, td, th {
-        border: 1px solid block;
-        padding: 5px;
-      }
-      th {
-        text-align: left;
-      }
-    </style>
-  </head>
-  <body>
+
     <?php
+    //BACK PHP
       error_reporting(E_ALL);
       ini_set('display_errors', 1);
 
@@ -36,12 +18,15 @@
       $query = "SELECT * FROM `question_bank`";
 
       if ($response = mysqli_query($conn, $query)) {
-        echo "<table id='addQuestionTbl'>
+        echo "<label for='exam_name'>Exam Name</label>";
+	echo "<input type='text' id='exam_name'><br>";
+	echo "<table id='addQuestionTbl'>
               <tr>
               <th>Check to add Question</th>
+	      <th>Score</th>
               <th>Question ID</th>
-              <th>Parameters</th>
-              <th>Question</th>
+              <th>Question Name</th>
+	      <th>Question</th>
               <th>Topic</th>
               <th>Difficulty</th>
               </tr>";
@@ -49,11 +34,12 @@
         while ($row = mysqli_fetch_array($response)) {
           echo "<tr>";
           echo "<td> <input type='checkbox' id='checkbox'> </td>";
-          echo "<td>" . $row['question_id'] . "</td>";
-          echo "<td>" . $row['parameters'] . "</td>";
-          echo "<td>" . $row['question_text'] . "</td>";
-          echo "<td>" . $row['topic'] . "</td>";
-          echo "<td>" . $row['difficulty'] . "</td>";
+          echo "<td> <input type='text' id='points'> </td>";
+	  echo "<td id='qid'>" . $row['question_id'] . "</td>";
+          echo "<td id='qname'>" . $row['name'] . "</td>";
+	  echo "<td id='qtext'>" . $row['question_text'] . "</td>";
+          echo "<td id='top'>" . $row['topic'] . "</td>";
+          echo "<td id='diff'>" . $row['difficulty'] . "</td>";
           echo "</tr>";
 
         }
@@ -66,5 +52,3 @@
       mysqli_close($conn);
 
      ?>
-  </body>
-</html>

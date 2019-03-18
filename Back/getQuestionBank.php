@@ -1,67 +1,53 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <style media="screen">
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      table, td, th {
-        border: 1px solid block;
-        padding: 5px;
-      }
-      th {
-        text-align: left;
-      }
-    </style>
-  </head>
-  <body>
-    <?php
-      error_reporting(E_ALL);
-      ini_set('display_errors', 1);
+<?php
 
-      $dbhost = "sql1.njit.edu";
-      $dbuser = "hy276";
-      $dbpass = "HY9Co7Qkq";
-      $dbname = "hy276";
-      //login to
-      $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-      if (!$conn) {
-        die("Cannot connect to DB: " . mysqli_connect_error());
-      }
+$dbhost = "sql1.njit.edu";
+$dbuser = "hy276";
+$dbpass = "HY9Co7Qkq";
+$dbname = "hy276";
+//login to
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
-      $query = "SELECT * FROM `question_bank`";
+if (!$conn) {
+  die("Cannot connect to DB: " . mysqli_connect_error());
+}
 
-      if ($response = mysqli_query($conn, $query)) {
-        echo "<table>
-              <tr>
-              <th>Question ID</th>
-              <th>Parameters</th>
-              <th>Question</th>
-              <th>Topic</th>
-              <th>Difficulty</th>
-              </tr>";
+$query = "SELECT DISTINCT `exam_name` FROM `exams`";
 
-        while ($row = mysqli_fetch_array($response)) {
-          echo "<tr>";
-          echo "<td>" . $row['question_id'] . "</td>";
-          echo "<td>" . $row['parameters'] . "</td>";
-          echo "<td>" . $row['question_text'] . "</td>";
-          echo "<td>" . $row['topic'] . "</td>";
-          echo "<td>" . $row['difficulty'] . "</td>";
-          echo "</tr>";
-        }
-        echo "</table>";
-      }
-      else {
-        die("query failed to db:");
-      }
+$itWorked = false;
 
-      mysqli_close($conn);
+if ($response = mysqli_query($conn, $query)) {
+  echo "<table>
+  	    <tr>
+	      <th>Exam Name </th>
+	      </tr>";
 
-     ?>
-  </body>
-</html>
+  while ($row = mysqli_fetch_array($response)) {
+    echo "<tr>";
+    echo "<td>" . $row['exam_name'] . "</td>";
+    echo "<td> <button type='button' id='take_exam' onclick='selectExam()>Take this exam</button> </td>";
+    echo "</tr>";
+  }
+  echo "</table>";
+}
+else {
+  die("Query failed");
+}
+
+mysqli_close($conn);
+  
+
+
+
+
+
+
+
+
+
+
+
+
+ ?>

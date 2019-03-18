@@ -110,32 +110,36 @@ function addQuestionToExam() {
   var requestData = "";
   var count = 1;
 
-  for (var i = 1; i < rowCount; i++) { //loops through the entire row length
+  for (var i = 1; i < rowCount; i+=1) { //loops through the entire row length
     var row = table.rows[i];
+    //console.log(row);
     var chkbox = row.cells[0].childNodes[1];
     if (chkbox.checked) { //get data if box was checked
       chkCount++;
+      //console.log(i);
+      //console.log(chkCount);
       for (var j = 2; j < row.cells.length; j+=7) {
         var qid = row.cells[j].innerHTML;
-        //console.log(dataCell);
-        //data cell holds the qids from the table(is dynamic)
+        //console.log(qid);
       }
       for (var j = 1; j < row.cells.length; j+=7) {
-	var points = row.cells[j].children[0].value;	
-	//console.log('score ' + score);
+	       var points = row.cells[j].children[0].value;
+         //console.log(points);
       }
-    }
-    if (i <= chkCount) { //urlencodes the qids got from the table
-      if (i >= 2) {
+      if (chkCount >= 2) {
         requestData += `&qid${i}=${qid}&points${i}=${points}`;
       }
       else {
         requestData += `qid${i}=${qid}&points${i}=${points}`;
+        }
+      }
+      else {
+        continue;
       }
     }
-  }
   requestData += `&exam_name=${form.exam_name.value}`;
   console.log(requestData);
+
   const request = new XMLHttpRequest();
 
   request.onload = function() {
@@ -145,7 +149,7 @@ function addQuestionToExam() {
       responseObj = JSON.parse(request.responseText);
     } catch (e) {
       console.error('could not parse json');
-      console.log("response: " + request.responseText);
+      console.log(request.responseText);
     }
     if (responseObj) {
       console.log('handling response');
@@ -162,11 +166,11 @@ function addQuestionToExam() {
       alert('exam added!');
     }
     if (responseObj.msg == 'not added') {
-      //console.log('not added' + request.responseText);
       alert('exam failed to add!');
     }
     else {
-      console.error('json couldnt be handled: ' + responseObj);
+      console.error('json couldnt be handled: ');
+      console.log(request.responseText);
     }
   };
 }

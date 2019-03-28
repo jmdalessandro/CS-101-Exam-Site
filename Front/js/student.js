@@ -1,14 +1,7 @@
-function SwapDivs(div1, div2) {
-  d1 = document.getElementById(div1);
-  d2 = document.getElementById(div2);
-  if (d2.style.display == "none") {
-    d1.style.display = "none";
-    d2.style.display = "block";
-  }
-  else {
-    d1.style.display = "block";
-    d2.style.display = "none";
-  }
+function setDisplay(div, displayOpt) {
+  d = document.getElementById(div);
+  var opt = displayOpt;
+  d.style.display = opt;
 }
 
 function getExam() {
@@ -21,11 +14,45 @@ function getExam() {
   request.send();
 }
 
-function selectExam() {
-
+function selectExam(button) {
+  
+  var exam = button.innerHTML;
+  //console.log(exam);
+  
+  const request = new XMLHttpRequest();
+  
+  request.onload = function() {
+    let responseObj = null;
+    
+    try {
+          responseObj = JSON.parse(request.responseText);
+        } catch (e) {
+          console.error('could not parse json');
+          console.log("response text: " + request.responseText);
+        }
+        if (responseObj) {
+          handleResponse(responseObj);
+        }
+   };
+  const requestData = `exam_name=${exam}`;
+  
+  request.open('POST', 'selectExam.php');
+  //request.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+  //console.log(requestData);
+  request.send(requestData);
+  
+   function handleResponse(responseObj) {
+      if (responseObj.msg == 'loading exam') { //load exam for student to take
+        console.log('loading exam');
+        console.log(request.responseText);
+      }
+      if (responseObj.msg == 'could not load exam') {
+        console.log('exam unable to load');
+        console.log(request.responseText);
+      }
+    };
 }
 
 function getExamReview() {
 
 }
-

@@ -19,15 +19,15 @@ $query = "SELECT DISTINCT `exam_name` FROM `exams`";
 $itWorked = false;
 
 if ($response = mysqli_query($conn, $query)) {
-  echo "<table>
+  echo "<table id='examNameTbl'>
   	    <tr>
 	      <th>Exam Name </th>
 	      </tr>";
 
   while ($row = mysqli_fetch_array($response)) {
+    $count = 0;
     echo "<tr>";
-    echo "<td>" . $row['exam_name'] . "</td>";
-    echo "<td> <button type='button' id='take_exam' onclick='selectExam()>Take this exam</button> </td>";
+    echo "<td> <button type='button' name='". $row['exam_name'] ."' onclick='selectExam(this);' style='width:100%'>" . $row['exam_name'] . "</button></td>";
     echo "</tr>";
   }
   echo "</table>";

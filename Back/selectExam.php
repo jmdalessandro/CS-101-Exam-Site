@@ -1,13 +1,13 @@
 <?php 
   //debug opts
   error_reporting(-1);
-  ini_set('display_all',1);
+  //ini_set('display_all',1);
   //header('Content-type: application/json');
   
 //mysql credentials
   $dbhost = "sql1.njit.edu";
   $dbuser = "hy276";
-  $dbpass = "HY9Co7Qkq";
+  $dbpass = "FbRHBUeZ";
   $dbname = "hy276";
   
   $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
@@ -15,16 +15,16 @@
   if (!$conn) {
     die("Cannot connect to DB: " . mysqli_connect_error());
   }
+   if (isset($_POST['exam_name'])) {
+     $exam_name = $_POST['exam_name'];
+     if ($exam_name === "") {
+       echo "curl data was null";
+     }
+   }
+   
+   //var_dump($exam_name);
   
-  $data = file_get_contents('php://input'); //cant seem to find the json thats being sent
-  //var_dump($data);
-  $array = json_decode($data, true);
-  $exam_name = $array['exam_name'];
-  
-  //echo "test";
-  //var_dump($exam_name);
-  
-  $query = "SELECT exam_name, question_text FROM exams, question_bank WHERE question_bank.question_id = exams.question_id AND exam_name = '$exam_name'";
+  $query = "SELECT exam_name, question_text, score FROM exam_list, question_bank WHERE question_bank.question_id = exam_list.question_id"; // AND exam_name = '$exam_name'";
   $itWorked = false;
   $exam_questions = [];
   $count = 0;
@@ -33,27 +33,32 @@
     $json = new stdClass();
   }
   
-  if ($response = mysqli_query($conn, $query)) { //generate quiz from information
+  if ($response = mysqli_query($conn, $query)) { //generate quiz from database
     $itWorked = true;
+    $json->exam_name = $exam_name;
     while($row = mysqli_fetch_array($response)) {
       $count++;
-      $json->exam_name = $exam_name;
+      $exam_name[$count] = $row['exam_name'];
       $exam_questions[$count] = $row['question_text'];
+      $score[$count] = $row['score'];
+      //print_r($row);
     }
-    $json->exam_questions = $exam_questions;
   }
   else {
     die("query failed");
   }
   
   if ($itWorked) {
+    $json->exam_name = $exam_name;
+    $json->exam_questions = $exam_questions;
+    $json->score = $score;
     $json->msg = "loading exam";
   }
   else if ($itWorked === false) {
     $json->msg = "could not load exam";
   }
-  $json = json_encode($json, true);
-  echo $json;
+  $encodedJSON = json_encode($json, true);
+  echo $encodedJSON;
   
   
   mysqli_close($conn);

@@ -5,14 +5,18 @@
     <title>Student Home</title>
     <link rel="stylesheet" href="css/student.css">
   </head>
-  <body onload="getExam();getResults()">
+  <body onload="getExam();" >
     <div id="nav-bar">
       <ul>
         <li><button type="button" id="student-home" onclick="window.location.href='http://web.njit.edu/~hy276/beta/front/student.html'">Home</button></li>
-        <li><button type="button" id="take-test-nav" onclick="SwapDivs('welcome-screen','exam-screen');">Take Exam</button></li>
-        <li><button type="button" id="exam-results-nav" onclick="SwapDivs('welcome-screen', 'results-screen');">Review Exam</button></li>
+        <li><button type="button" id="take-test-nav"
+	onclick="setDisplay('exam-screen','block');setDisplay('results-screen',
+	'none');setDisplay('welcome-screen', 'none')">Take Exam</button></li>
+        <li><button type="button" id="exam-results-nav" onclick="setDisplay('results-screen',
+	'block');setDisplay('welcome-screen', 'none');setDisplay('exam-screen', 'none');">Review Exam</button></li>
       </ul>
     </div>
+   <div id="main" align='center'>
     <div id="welcome-screen">
       <h1>Welcome Student!</h1>
     </div>
@@ -28,7 +32,10 @@
 
       </div>
     </div>
-
+    <div id="takeExam">
+    
+    </div>
+  </div>
 
 
 

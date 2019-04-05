@@ -1,8 +1,7 @@
 <?php 
   //debug opts
   error_reporting(-1);
-  //ini_set('display_all',1);
-  //header('Content-type: application/json');
+  //ini_set('display_errors',1);
   
 //mysql credentials
   $dbhost = "sql1.njit.edu";
@@ -10,21 +9,16 @@
   $dbpass = "FbRHBUeZ";
   $dbname = "hy276";
   
+  //var_dump(file_get_contents("php://input"));
+  
   $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
   
   if (!$conn) {
     die("Cannot connect to DB: " . mysqli_connect_error());
   }
-   if (isset($_POST['exam_name'])) {
-     $exam_name = $_POST['exam_name'];
-     if ($exam_name === "") {
-       echo "curl data was null";
-     }
-   }
-   
-   //var_dump($exam_name);
   
-  $query = "SELECT exam_name, question_text, score FROM exam_list, question_bank WHERE question_bank.question_id = exam_list.question_id"; // AND exam_name = '$exam_name'";
+  $query = "SELECT exam_name, question_text, score FROM exam_list, question_bank WHERE question_bank.question_id = exam_list.question_id "; // AND exam_name = '$exam_name'";
+  //$query = "SELECT exam_name, question_text, score FROM exam_list, question_bank WHERE question_bank.question_id = exam_list.question_id AND exam_name = '$exam_name'";
   $itWorked = false;
   $exam_questions = [];
   $count = 0;
@@ -35,7 +29,7 @@
   
   if ($response = mysqli_query($conn, $query)) { //generate quiz from database
     $itWorked = true;
-    $json->exam_name = $exam_name;
+    //$json->exam_name = $exam_name;
     while($row = mysqli_fetch_array($response)) {
       $count++;
       $exam_name[$count] = $row['exam_name'];

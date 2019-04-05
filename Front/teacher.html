@@ -9,8 +9,9 @@
   <body onload="showQuestions();showQuestionTblChecks();" >
     <div class="navigation">
       <ul id="navigation-list">
+        <li id="home-nav"><button type="button" id="teacher-home" onclick="window.location.href='http://web.njit.edu/~hy276/beta/front/teacher.html'">Home</button></li>
         <li id="make-exam-nav">
-          <button type="button" onclick="SwapDivs('create-question', 'create-exam');SwapDivs('question-databank', 'exam-preview');display('submit-question-wrapper')">Create Question</button>
+          <button type="button" onclick="SwapDivs('create-question', 'create-exam');SwapDivs('question-databank', 'exam-preview')">Create Question</button>
         </li>
         <li id="create-question-nav">
           <button type="button" onclick="SwapDivs('exam-preview', 'question-databank');SwapDivs('create-exam', 'create-question');">Create Exam</button>
@@ -23,6 +24,9 @@
     <div class="welcome-teacher">
       <h1 style="font-size: bold;">Welcome Teacher</h1>
     </div>
+    <div id="home"> 
+      <h1>Hello Teacher!</h1>
+    </div>
     <!-- left column -->
   <div class="row">
     <div class="exam-editor">
@@ -30,13 +34,23 @@
       <!-- will be create question and adding questions via nav bar -->
         <div id="create-question">
           <h3>create a question</h3>
-            <label for="topic">Question Topic</label><br>
-            <input type="text" id="topic" autocomplete="off" required><br>
-            <label for="question_name">Question Name</label><br>
+            <label for="question_name">Function Name</label><br>
             <input type="text" id="question_name" autocomplete="off" required><br>
+            <label for="topic">Question Topic</label><br>
+            <select id="topic">
+              <option value="" disabled selected autocomplete="off">Select a topic</option>
+              <option value="function">function</option>
+              <option value="loops">loops</option>
+              <option value="recursion">recursion</option>
+              <option value="lists">lists</option>
+              <option value="dicts">dicts</option>
+              <option value="strings">strings</option>
+              <option value="logic">logic</option>
+            </select><br>
             <label for="question_text">Question</label><br>
-            <input type="text" id="question_text" autocomplete="off" required><br>
-            <label for="difficulty">question difficulty</label><br>
+            <!--<input type="text" id="question_text" autocomplete="off" required><br> -->
+            <textarea rows="4" cols="50" id="question_text"></textarea><br>
+	    <label for="difficulty">question difficulty</label><br>
             <select id="difficulty">
               <option value="" disabled selected autocomplete="off">Select a difficulty</option>
               <option value="easy">easy</option>
@@ -64,7 +78,16 @@
       <h1>Databank</h1>
       <button type="submit" id="refresh-preview" onclick="return showQuestions()">Refresh Databank</button> <!-- reloads the databank info -->
       <label for="sort-topic">Topic</label>
-      <input type="text" id="sort-topic">
+      <select id="topic">
+        <option value="" disabled selected autocomplete="off">Select a topic</option>
+        <option value="function">function</option>
+        <option value="loops">loops</option>
+        <option value="recursion">recursion</option>
+        <option value="lists">lists</option>
+        <option value="dicts">dicts</option>
+        <option value="strings">strings</option>
+        <option value="logic">logic</option>
+      </select>
       <label for="sort-difficulty"></label>
       <select id="sort-difficulty">
         <option value="" disabled selected>Filter by difficulty</option>

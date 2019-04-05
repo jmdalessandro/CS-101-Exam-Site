@@ -11,18 +11,10 @@ function SwapDivs(div1, div2) {
   }
 }
 
-function display(div) {
-  d1 = document.getElementById(div)
-  if (d1.style.display == "block") {
-    d1.style.display = "none";
-  }
-  else {
-    d1.style.display = "block";
-  }
-}
-
-function showDivOnly(div1, div2, div3, div4) {
-
+function setDisplay(div, displayOpt) {
+  d = document.getElementById(div);
+  var opt = displayOpt;
+  d.style.display = opt;
 }
 
 function submitQuestion() {
@@ -97,75 +89,49 @@ function showQuestionTblChecks() {
 function addQuestionToExam() {
   const form = {
     exam_name: document.getElementById('exam_name'),
-    points: document.getElementById('points'),
-    qid: document.getElementById('qid'),
-    qname: document.getElementById('qname'),
-    qtext: document.getElementById('qtext'),
-    top: document.getElementById('top'),
-    diff: document.getElementById('diff')
   }
   var table = document.getElementById('addQuestionTbl');
   var rowCount = table.rows.length;
   var chkCount = 0;
   var requestData = "";
   var count = 1;
-
+  var json = "";
+  var requestData = "{ \"exam_name\":\"" + form.exam_name.value + "\"";
   for (var i = 1; i < rowCount; i+=1) { //loops through the entire row length
     var row = table.rows[i];
     //console.log(row);
     var chkbox = row.cells[0].childNodes[1];
     if (chkbox.checked) { //get data if box was checked
-      chkCount++;
-      //console.log(i);
-      //console.log(chkCount);
-      for (var j = 2; j < row.cells.length; j+=7) {
-        var qid = row.cells[j].innerHTML;
-        //console.log(qid);
-      }
-      for (var j = 1; j < row.cells.length; j+=7) {
-	       var points = row.cells[j].children[0].value;
-         //console.log(points);
-      }
-      if (chkCount >= 2) {
-        requestData += `&qid${i}=${qid}&points${i}=${points}`;
-      }
-      else {
-        requestData += `qid${i}=${qid}&points${i}=${points}`;
-        }
-      }
-      else {
-        continue;
-      }
+      var point = row.cells[1].children[0].value;
+      var qid = row.cells[2].innerHTML;
+      requestData += ", \"qid" + i + "\":\"" + qid + "\", \"points" + i + "\":\"" + point + "\"";
     }
-  requestData += `&exam_name=${form.exam_name.value}`;
+  }
+  requestData += " }";
   console.log(requestData);
 
   const request = new XMLHttpRequest();
 
   request.onload = function() {
-    let responseObj = null;
-
     try {
+      var responseObj = request.responseText;
       responseObj = JSON.parse(request.responseText);
-    } catch (e) {
-      console.error('could not parse json');
-      console.log(request.responseText);
-    }
-    if (responseObj) {
       console.log('handling response');
       handleResponse(responseObj);
+    } catch (e) {
+      console.error('could not parse json');
+      console.log("response: " + request.responseText);
     }
   };
-
   request.open('POST', 'submitQuestion.php');
-  request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  request.setRequestHeader('Content-type', 'application/json');
   request.send(requestData); //will send something like this: qid1=1&qid2=23 and so on, which will be easily encoded as a json
 
   function handleResponse(responseObj) {
-   if (responseObj.msg == 'exam added') {
+    if (responseObj.msg == 'exam added') {
       alert('exam added!');
     }
-    if (responseObj.msg == 'not added') {
+    else if (responseObj.msg == 'not added') {
       alert('exam failed to add!');
     }
     else {

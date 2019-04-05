@@ -46,7 +46,7 @@ function submitExam() {
   request.send(JSON.stringify(fieldData));
   
   function handleResponse(responseObj) {
-      console.log(responseObj);
+      console.log("response sent!");
   }
 }
 
@@ -70,18 +70,16 @@ function selectExam(button) {
           handleResponse(responseObj);
         }
    };
-  const requestData = `exam_name=${exam}`;
+  var requestData = `exam_name=${exam}`;
+  console.log(requestData);
   
   request.open("POST", "selectExam.php");
   request.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-  //console.log(requestData);
   request.send(requestData);
   
    function handleResponse(responseObj) {
       if (responseObj.msg == 'loading exam') { //load exam for student to take
         console.log('loading exam');
-        //console.log(responseObj);
-        
         //create test (maybe include a new function so it's not that cluttered
         setDisplay('exam-screen','none');
         var examInfo = responseObj; 

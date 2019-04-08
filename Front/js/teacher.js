@@ -1,6 +1,6 @@
 function SwapDivs(div1, div2) {
-  d1 = document.getElementById(div1);
-  d2 = document.getElementById(div2);
+  var d1 = document.getElementById(div1);
+  var d2 = document.getElementById(div2);
   if (d2.style.display == "none") {
     d1.style.display = "none";
     d2.style.display = "block";
@@ -12,7 +12,7 @@ function SwapDivs(div1, div2) {
 }
 
 function setDisplay(div, displayOpt) {
-  d = document.getElementById(div);
+  var d = document.getElementsByClassName(div);
   var opt = displayOpt;
   d.style.display = opt;
 }
@@ -140,7 +140,62 @@ function addQuestionToExam() {
     }
   };
 }
+function keyword_search(table) {
+  var search = document.getElementById('sort-keyword');
+  var filter = search.value.toUpperCase();
+  var table = document.getElementById(table);
+  var tr = table.getElementsByTagName("tr");
+  var i, j;
+  //dynamic search
+  for (i = 1; i < tr.length; i++){
+    tr[i].style.display = "none";
+    
+    td = tr[i].getElementsByTagName("td");
+    for (j = 0; j < td.length; j++) {
+      cell = tr[i].getElementsByTagName("td")[j];
+      if (cell) {
+        if (cell.innerText.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+          break;
+        }
+      }
+    }
+  }
+}
+//filtering functions
+function filterChkbox() {
+  var topic = document.getElementById('sort-topic').value;
+  var difficulty = document.getElementById('sort-difficulty').value;
+  
+  const request = new XMLHttpRequest();
+  var requestData = "{\"topic\":\"" + topic + "\",\"difficulty\":\"" + difficulty + "\"}";
+  console.log(requestData);
+  var responseObj = null;
+  request.onload = function() {
+    document.getElementById('create-exam').innerHTML = this.responseText;
+  };
+  request.open("POST", "filterChkbox.php");
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.send(requestData);
+}
 
+function filter() {
+  var topic = document.getElementById('sort-topic').value;
+  var difficulty = document.getElementById('sort-difficulty').value;
+  
+  const request = new XMLHttpRequest();
+  var requestData = "{\"topic\":\"" + topic + "\",\"difficulty\":\"" + difficulty + "\"}";
+  console.log(requestData);
+  var responseObj = null;
+  request.onload = function() {
+    document.getElementById('question-table').innerHTML = this.responseText;
+  };
+  request.open("POST", "filter.php");
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.send(requestData);
+}
+
+//adds additional test cases
 function addFields() {
 
 }

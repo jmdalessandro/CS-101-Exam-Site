@@ -23,6 +23,7 @@ function submitQuestion() {
     question_name: document.getElementById('question_name'),
     question_text: document.getElementById('question_text'),
     difficulty: document.getElementById('difficulty'),
+    constraint: document.getElementById('constraint'),
     input1: document.getElementById('input1'),
     output1: document.getElementById('output1'),
     input2: document.getElementById('input2'),
@@ -48,7 +49,7 @@ function submitQuestion() {
         }
       };
 
-    const requestData = `topic=${form.topic.value}&question_name=${form.question_name.value}&question_text=${form.question_text.value}&difficulty=${form.difficulty.value}&input1=${form.input1.value}&output1=${form.output1.value}&input2=${form.input2.value}&output2=${form.output2.value}`;
+    const requestData = `topic=${form.topic.value}&question_name=${form.question_name.value}&question_text=${form.question_text.value}&difficulty=${form.difficulty.value}&constraint=${form.constraint.value}&input1=${form.input1.value}&output1=${form.output1.value}&input2=${form.input2.value}&output2=${form.output2.value}`;
 
     request.open("post", "createQuestion.php");
     request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'); // didnt include 'application/... in the options'
@@ -89,23 +90,22 @@ function showQuestionTblChecks() {
 function addQuestionToExam() {
   const form = {
     exam_name: document.getElementById('exam_name'),
+    msg: document.getElementById('form-msgs'),
   }
-  var table = document.getElementById('addQuestionTbl');
+  var table = document.getElementById('preview');
   var rowCount = table.rows.length;
   var chkCount = 0;
   var requestData = "";
   var count = 1;
   var json = "";
   var requestData = "{ \"exam_name\":\"" + form.exam_name.value + "\"";
-  for (var i = 1; i < rowCount; i+=1) { //loops through the entire row length
+  for (var i = 0; i < rowCount; i++) { //loops through the entire row length
     var row = table.rows[i];
     //console.log(row);
-    var chkbox = row.cells[0].childNodes[1];
-    if (chkbox.checked) { //get data if box was checked
-      var point = row.cells[1].children[0].value;
-      var qid = row.cells[2].innerHTML;
-      requestData += ", \"qid" + i + "\":\"" + qid + "\", \"points" + i + "\":\"" + point + "\"";
-    }
+    
+      var point = row.cells[3].children[0].value;
+      var qid = row.cells[0].innerHTML;
+      requestData += ", \"qid" + (i+1) + "\":\"" + qid + "\", \"points" + (i+1) + "\":\"" + point + "\"";
   }
   requestData += " }";
   console.log(requestData);
@@ -129,10 +129,24 @@ function addQuestionToExam() {
 
   function handleResponse(responseObj) {
     if (responseObj.msg == 'exam added') {
-      alert('exam added!');
+      while (form.msg.firstChild) {
+          form.msg.removeChild(form.msg.firstChild);
+        }
+            const li = document.createElement('li');
+            li.textContent = 'EXAM ADDED';
+            form.msg.appendChild(li);
+
+        form.msg.style.display = "block";
     }
     else if (responseObj.msg == 'not added') {
-      alert('exam failed to add!');
+      while (form.msg.firstChild) {
+          form.msg.removeChild(form.msg.firstChild);
+        }
+            const li = document.createElement('li');
+            li.textContent = 'EXAM NOT ADDED';
+            form.msg.appendChild(li);
+
+        form.msg.style.display = "block";
     }
     else {
       console.error('json couldnt be handled: ');
@@ -140,8 +154,8 @@ function addQuestionToExam() {
     }
   };
 }
-function keyword_search(table) {
-  var search = document.getElementById('sort-keyword');
+function keyword_search(sorter, table) {
+  var search = document.getElementById(sorter);
   var filter = search.value.toUpperCase();
   var table = document.getElementById(table);
   var tr = table.getElementsByTagName("tr");
@@ -164,8 +178,8 @@ function keyword_search(table) {
 }
 //filtering functions
 function filterChkbox() {
-  var topic = document.getElementById('sort-topic').value;
-  var difficulty = document.getElementById('sort-difficulty').value;
+  var topic = document.getElementById('sort-topic-chkbox').value;
+  var difficulty = document.getElementById('sort-difficulty-chkbox').value;
   
   const request = new XMLHttpRequest();
   var requestData = "{\"topic\":\"" + topic + "\",\"difficulty\":\"" + difficulty + "\"}";
@@ -196,6 +210,100 @@ function filter() {
 }
 
 //adds additional test cases
-function addFields() {
+function alterFields(id) {
+  //find out if we're removing or adding a input field
+  //var count;
+  
+  if (id == 'add-cases') {
+    var div = document.createElement("DIV");
+    //div.id = 'fields';
+    var label = document.createElement("LABEL");
+    label.htmlFor = 'input ';
+    label.innerHTML = 'input ';
+    label.style="float: left; width: 10em; margin-right: 1em;";
+    var input = document.createElement("INPUT");
+    input.setAttribute("type","text");
+    input.id = 'input';
+    div.appendChild(label);
+    label.appendChild(input);
+    //document.getElementById('create-question').appendChild(div);
+    
+    var outputLabel = document.createElement("LABEL");
+    outputLabel.htmlFor = 'output ';
+    outputLabel.innerHTML = 'output ';
+    outputLabel.style="float: left; width: 10em; margin-right: 1em;";
+    var output = document.createElement("INPUT");
+    output.setAttribute("type","text");
+    output.id = 'output';
+    document.getElementById('create-question').appendChild(div);
+    div.appendChild(outputLabel);
+    outputLabel.appendChild(output);
+    count++;
+  }
+  else {
+    var el = document.getElementById('create-question');
+    el.removeChild(el.lastChild); //removes both output and input at the same time?
+    //el.removeChild(el.lastChild);
+  }
+}
+function showTblChks() {
+  const request = new XMLHttpRequest();
 
+  request.onload = function () {
+    document.getElementById('preview-table').innerHTML = this.responseText;
+  };
+  request.open("get", "showTblChks.php");
+  request.send();
+}
+
+function moveRight(id, name, text, topic, diff, constraint, i) {
+  var leftTable = document.getElementById('addQuestionTbl');
+  var rightTable = document.getElementById('preview');
+  rightTable.style.alignSelf = "center";
+  var newRow = rightTable.insertRow(rightTable.length),
+      cell1 = newRow.insertCell(0),
+      cell2 = newRow.insertCell(1),
+      cell3 = newRow.insertCell(2),
+      cell4 = newRow.insertCell(3),
+      cell5 = newRow.insertCell(4);
+  cell1.innerHTML = id;
+  cell2.innerHTML = name;
+  cell3.innerHTML = text;
+  cell4.innerHTML = "<input type='text' id='score' placeholder='enter score here'>";
+  cell5.innerHTML = "<input type='checkbox' id='rightChkbox' onchange='moveLeft()'>";
+  
+  var index = leftTable.rows[i].rowIndex;
+  leftTable.deleteRow(index);
+}
+
+function moveLeft() {
+  var leftTable = document.getElementById('addQuestionTbl');
+  var rightTable = document.getElementById('preview');
+  var rowCount = rightTable.rows.length;
+  for (var i = 0; i < rowCount; i++) { //loops through the entire row length
+    var chkbox = rightTable.rows[i].cells[4];
+    if (chkbox.checked) { //get data if box was checked
+      console.log("not checked!");
+    }
+    else {
+      var index = rightTable.rows[i].rowIndex;  //find a way to check and add it back to the right table
+      rightTable.deleteRow(index);
+      showQuestionTblChecks();
+    }
+  }
+}
+
+function handleChk() {
+  var leftTable = document.getElementById('addQuestionTbl');
+  var rightTable = document.getElementById('preview');
+  var rowCount = leftTable.rows.length;
+    for (var i = 1; i < rowCount; i++) { //loops through the entire row length
+      var row = leftTable.rows[i];
+      var chkbox = row.cells[0].childNodes[1];
+      if (chkbox.checked) { //get data if box was checked
+        var id = row.cells[1].innerHTML, name = row.cells[2].innerHTML, text = row.cells[3].innerHTML,
+            topic = row.cells[4].innerHTML, diff = row.cells[5].innerHTML, constraint = row.cells[6].innerHTML;
+        moveRight(id, name, text, topic, diff, constraint, i);
+      }
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-    $url = 'https://web.njit.edu/~hy276/beta/back/selectExam.php';
+    $url = 'https://web.njit.edu/~hy276/beta/back/submitExam.php';
     //$url = 'https://web.njit.edu/~jmd35/beta/back/getQuestions.php';
     
     $getdata = file_get_contents('php://input');

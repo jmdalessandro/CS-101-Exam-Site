@@ -3,7 +3,7 @@
  //mysql credentials
   $dbhost = "sql1.njit.edu";
   $dbuser = "hy276";
-  $dbpass = "HY9Co7Qkq";
+  $dbpass = "FbRHBUeZ";
   $dbname = "hy276";
   //login to
   $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
@@ -18,9 +18,9 @@
   $array  = json_decode($getdata,true);
   
   //$exam_name = "Exam1";
-  $exam_name = $array['exam_name'];
+  $exam_name = $array['examName'];
   
-  $query1 = "SELECT * FROM `exams`,`student_exam`,`question_bank` WHERE `exams`.`exam_name` = `student_exam`.`exam_name` AND `exams`.`exam_name` = '$exam_name' AND `exams`.`question_id` = `question_bank`.`question_id`";
+  $query1 = "SELECT * FROM `exam_list`,`student_exam`,`question_bank` WHERE `exam_list`.`exam_name` = `student_exam`.`exam_name` AND `exam_list`.`exam_name` = '$exam_name' AND `exam_list`.`question_id` = `question_bank`.`question_id`";
   
   $response = mysqli_query($conn, $query1);
   
@@ -37,6 +37,15 @@
             'output1' => $row['output1'],
             'input2' => $row['input2'],
             'output2' => $row['output2'],
+            'input3' => $row['input3'],
+            'output3' => $row['output3'],
+            'input4' => $row['input4'],
+            'output4' => $row['output4'],
+            'input5' => $row['input5'],
+            'output5' => $row['output5'],
+            'input6' => $row['input6'],
+            'output6' => $row['output6'],
+            'constraint' => $row['constraint'],
             'name'=> $row['name']
             
         );

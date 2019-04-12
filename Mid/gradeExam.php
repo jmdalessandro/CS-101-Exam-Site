@@ -1,7 +1,7 @@
 <?php
-$finalGrade_url = 'https://web.njit.edu/~jmd35/beta/back/addGrade.php';
-$gradingData_url = 'https://web.njit.edu/~jmd35/beta/back/getGradingData.php';
-$getTestCases_url = 'https://web.njit.edu/~jmd35/beta/back/getGradingData.php';
+$finalGrade_url = 'https://web.njit.edu/~hy276/beta/back/addGrade.php';
+$gradingData_url = 'https://web.njit.edu/~hy276/beta/back/getGradingData.php';
+$getTestCases_url = 'https://web.njit.edu/~hy276/beta/back/getGradingData.php';
 $maxPoints = 0;
 $totalPoints = 0;
 $examPoints = array();

@@ -24,14 +24,10 @@ function submitQuestion() {
     question_text: document.getElementById('question_text'),
     difficulty: document.getElementById('difficulty'),
     constraint: document.getElementById('constraint'),
-    input1: document.getElementById('input1'),
-    output1: document.getElementById('output1'),
-    input2: document.getElementById('input2'),
-    output2: document.getElementById('output2'),
-    submit: document.getElementById('submit-question')
+    submit: document.getElementById('submit-question'),
+    msg: document.getElementById('createQuestion-notifs')
   };
 
-  //  form.submit.addEventListener('click', () => {
       const request = new XMLHttpRequest();
 
       request.onload = function() {
@@ -42,29 +38,59 @@ function submitQuestion() {
           responseObj = JSON.parse(request.responseText);
         } catch (e) {
           console.error('could not parse json');
-          console.log("response text" + request.responseText);
+          console.log("response text: " + request.responseText);
         }
         if (responseObj) {
           handleResponse(responseObj);
         }
       };
 
-    const requestData = `topic=${form.topic.value}&question_name=${form.question_name.value}&question_text=${form.question_text.value}&difficulty=${form.difficulty.value}&constraint=${form.constraint.value}&input1=${form.input1.value}&output1=${form.output1.value}&input2=${form.input2.value}&output2=${form.output2.value}`;
+    //const requestData = `topic=${form.topic.value}&question_name=${form.question_name.value}&question_text=${form.question_text.value}&difficulty=${form.difficulty.value}&constraint=${form.constraint.value}&input1=${form.input1.value}&output1=${form.output1.value}&input2=${form.input2.value}&output2=${form.output2.value}`;
+    const requestData = {};
 
+    for (var i = 0; i < document.getElementsByName("testcase").length /2; i++) {
+      var inputName = "input" + (i+1);
+      var outputName = "output" + (i+1);
+      var inputVal = document.getElementById(inputName).value;
+      var outputVal = document.getElementById(outputName).value;
+
+      if (document.getElementById(inputName).id == inputName) {
+        requestData[inputName] = inputVal;
+      }
+        requestData[outputName] = outputVal;
+    requestData["question_name"] = form.question_name.value;
+    requestData["question_text"] = form.question_text.value;
+    requestData["topic"] = form.topic.value;
+    requestData["difficulty"] = form.difficulty.value;
+    requestData["constraint"] = form.constraint.value;
+    }
+    console.log(requestData);
     request.open("post", "createQuestion.php");
-    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'); // didnt include 'application/... in the options'
-    request.send(requestData);
+    request.setRequestHeader('Content-type', 'application/json'); // didnt include 'application/... in the options'
+    request.send(JSON.stringify(requestData));
 
     function handleResponse(responseObj) {
       if (responseObj.msg == 'question added') {
-        console.log('question added');
-        alert('question was added!');
+        while (form.msg.firstChild) {
+          form.msg.removeChild(form.msg.firstChild);
+        }
+            const li = document.createElement('li');
+            li.textContent = 'Question Added';
+            form.msg.appendChild(li);
+
+        form.msg.style.display = "block";
       }
       if (responseObj.msg == 'not added') {
-        console.log('not added');
+        while (form.msg.firstChild) {
+          form.msg.removeChild(form.msg.firstChild);
+        }
+            const li = document.createElement('li');
+            li.textContent = 'Question Not Added';
+            form.msg.appendChild(li);
+
+        form.msg.style.display = "block";
       }
     };
-//  });
 }
 
 function showQuestions() {
@@ -102,7 +128,7 @@ function addQuestionToExam() {
   for (var i = 0; i < rowCount; i++) { //loops through the entire row length
     var row = table.rows[i];
     //console.log(row);
-    
+
       var point = row.cells[3].children[0].value;
       var qid = row.cells[0].innerHTML;
       requestData += ", \"qid" + (i+1) + "\":\"" + qid + "\", \"points" + (i+1) + "\":\"" + point + "\"";
@@ -163,7 +189,7 @@ function keyword_search(sorter, table) {
   //dynamic search
   for (i = 1; i < tr.length; i++){
     tr[i].style.display = "none";
-    
+
     td = tr[i].getElementsByTagName("td");
     for (j = 0; j < td.length; j++) {
       cell = tr[i].getElementsByTagName("td")[j];
@@ -180,7 +206,7 @@ function keyword_search(sorter, table) {
 function filterChkbox() {
   var topic = document.getElementById('sort-topic-chkbox').value;
   var difficulty = document.getElementById('sort-difficulty-chkbox').value;
-  
+
   const request = new XMLHttpRequest();
   var requestData = "{\"topic\":\"" + topic + "\",\"difficulty\":\"" + difficulty + "\"}";
   console.log(requestData);
@@ -196,7 +222,7 @@ function filterChkbox() {
 function filter() {
   var topic = document.getElementById('sort-topic').value;
   var difficulty = document.getElementById('sort-difficulty').value;
-  
+
   const request = new XMLHttpRequest();
   var requestData = "{\"topic\":\"" + topic + "\",\"difficulty\":\"" + difficulty + "\"}";
   console.log(requestData);
@@ -212,40 +238,46 @@ function filter() {
 //adds additional test cases
 function alterFields(id) {
   //find out if we're removing or adding a input field
-  //var count;
-  
+  var count = document.getElementsByName("testcase").length;
+
   if (id == 'add-cases') {
+    count = Math.floor((count / 2) + 1);
+    console.log(count);
     var div = document.createElement("DIV");
-    //div.id = 'fields';
+    div.style.width = "20%";
     var label = document.createElement("LABEL");
     label.htmlFor = 'input ';
-    label.innerHTML = 'input ';
-    label.style="float: left; width: 10em; margin-right: 1em;";
+    label.innerHTML = 'Input ' + count;
+    label.style.cssText ="float: left; width: 10em; margin-right: 1em;";
     var input = document.createElement("INPUT");
     input.setAttribute("type","text");
-    input.id = 'input';
+    input.setAttribute("name", "testcase");
+    input.style.cssText ="float: left; width: 10em; margin-right: 1em;";
+    input.id = 'input' + count;
     div.appendChild(label);
     label.appendChild(input);
-    //document.getElementById('create-question').appendChild(div);
-    
+
     var outputLabel = document.createElement("LABEL");
     outputLabel.htmlFor = 'output ';
-    outputLabel.innerHTML = 'output ';
+    outputLabel.innerHTML = 'Output ' + count;
     outputLabel.style="float: left; width: 10em; margin-right: 1em;";
     var output = document.createElement("INPUT");
     output.setAttribute("type","text");
-    output.id = 'output';
+    output.setAttribute("name", "testcase");
+    output.style.cssText ="float: left; width: 10em; margin-right: 1em;";
+    output.id = 'output' + count;
     document.getElementById('create-question').appendChild(div);
     div.appendChild(outputLabel);
     outputLabel.appendChild(output);
-    count++;
   }
   else {
     var el = document.getElementById('create-question');
     el.removeChild(el.lastChild); //removes both output and input at the same time?
-    //el.removeChild(el.lastChild);
+    count = Math.floor((count / 2) - 1);
+    console.log(count);
   }
 }
+
 function showTblChks() {
   const request = new XMLHttpRequest();
 
@@ -269,9 +301,9 @@ function moveRight(id, name, text, topic, diff, constraint, i) {
   cell1.innerHTML = id;
   cell2.innerHTML = name;
   cell3.innerHTML = text;
-  cell4.innerHTML = "<input type='text' id='score' placeholder='enter score here'>";
+  cell4.innerHTML = "<input type='text' id='rightScore' placeholder='enter score here' onkeyup='trackScore()'>";
   cell5.innerHTML = "<input type='checkbox' id='rightChkbox' onchange='moveLeft()'>";
-  
+
   var index = leftTable.rows[i].rowIndex;
   leftTable.deleteRow(index);
 }
@@ -306,4 +338,108 @@ function handleChk() {
         moveRight(id, name, text, topic, diff, constraint, i);
       }
     }
+}
+
+function trackScore() {
+  const form = {
+    msg: document.getElementById('form-msgs'),
+    submit: document.getElementById('submit-exam'),
+  } ;
+  var el = document.getElementById("total-score");
+  var table = document.getElementById("preview");
+  var points = 0, totalScore;
+  for (var i = 0; i < table.rows.length; i++){
+    points =  Number(points) + Number(table.rows[i].cells[3].children[0].value);
+    el.innerHTML = points;
+  }
+}
+
+function getGradedExam() {
+  const request = new XMLHttpRequest();
+
+  request.onload = function() {
+    document.getElementById('examsTable').innerHTML = this.responseText;
+  };
+  request.open("GET", "getGradedExam.php");
+  request.send();
+}
+
+function makeGradedExam(button) {
+    var examName = button.innerHTML;
+    var requestData = {};
+    requestData["examName"] = examName;
+    console.log(requestData);
+    const request = new XMLHttpRequest();
+
+    request.onload = function() {
+      let responseObj = null;
+
+      try {
+          responseObj = JSON.parse(request.responseText);
+        } catch (e) {
+          console.error('could not parse json');
+          console.log("response text: " + request.responseText);
+        }
+        if (responseObj) {
+          handleResponse(responseObj);
+        }
+      };
+
+    request.open("POST", "makeGradedExam.php");
+    request.setRequestHeader('Content-type','application/json');
+    request.send(JSON.stringify(requestData));
+
+    function handleResponse(responseObj) {
+      if (responseObj.msg == 'got graded exam') { //create exam here
+        //console.log("success!" + request.responseText);
+        var examInfo = responseObj; 
+        
+        console.log(examInfo);
+        SwapDivs('examList', 'reviewExamContainer');
+        var examContainer = document.getElementById("reviewExamContainer");
+        var examTitle = document.createElement("H1");
+        examTitle.setAttribute("id", "examName");
+        var examTitleText = document.createTextNode(examInfo.exam_name); 
+        examTitle.appendChild(examTitleText);
+        examContainer.appendChild(examTitle);
+        var table = document.getElementById('tabularExamReview'); //get table from html
+        //insert headers
+        var newRow = table.insertRow(table.length),
+            cell1 = newRow.insertCell(0),
+            cell2 = newRow.insertCell(1),
+            cell3 = newRow.insertCell(2),
+            cell4 = newRow.insertCell(3);
+            cell1.innerHTML = "Question";
+            cell2.innerHTML = "Student Answer";
+            cell3.innerHTML = "Comments";
+            cell4.innerHTML = "Scores";
+            cell4.setAttribute("colspan", "3");
+        for (var i = 1; i <= 3; i++ ) {
+          var newRow = table.insertRow(table.length),
+            cell1 = newRow.insertCell(0),
+            cell2 = newRow.insertCell(1),
+            cell3 = newRow.insertCell(2),
+            cell4 = newRow.insertCell(3),
+            cell5 = newRow.insertCell(4),
+            cell6 = newRow.insertCell(5);
+            cell1.innerHTML = examInfo.exam_questions[i];
+            cell1.setAttribute("name", "exam_questions");
+            cell2.innerHTML = examInfo.exam_answers[i];
+            cell3.innerHTML = examInfo.exam_comments;
+            cell4.innerHTML = examInfo.partials[i];
+            cell5.innerHTML = examInfo.exam_scores[i];
+            cell6.innerHTML = examInfo.totalScore[i];
+        }
+        var releaseBtn = document.createElement("BUTTON");
+        releaseBtn.setAttribute("type", "button");
+        releaseBtn.setAttribute("id", "releaseBtn");
+      }
+      else {
+        console.log("failed!" + request.responseText);
+      }
+    }
+}
+
+function checkExam() { //check exam availibilty
+
 }

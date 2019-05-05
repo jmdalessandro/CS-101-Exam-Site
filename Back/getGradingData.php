@@ -17,13 +17,24 @@
   
   $array  = json_decode($getdata,true);
   
-  //$exam_name = "Exam1";
-  $exam_name = $array['examName'];
+  //$exam_name = "Exam2";
+ $exam_name = $array['examName'];
+ //echo "hello";
   
   $query1 = "SELECT * FROM `exam_list`,`student_exam`,`question_bank` WHERE `exam_list`.`exam_name` = `student_exam`.`exam_name` AND `exam_list`.`exam_name` = '$exam_name' AND `exam_list`.`question_id` = `question_bank`.`question_id`";
   
-  $response = mysqli_query($conn, $query1);
+ //$query1 = "INSERT INTO `exam_list`(`exam_name`, `question_id`, `score`, `taken`) VALUES ('Exam2',44,55,1)";
+ 
+ //$query1 = "SELECT * FROM `student_exam`";
+ 
+ 
   
+ $response = mysqli_query($conn, $query1) or die($myQuery."<br/><br/>".mysql_error()); 
+  
+//while ($rows = mysqli_fetch_array($response, MYSQLI_NUM)) {
+//    var_dump($rows);
+//}
+
   if ($response->num_rows > 0) {
     while ($row = $response->fetch_assoc()) {
     
@@ -54,8 +65,35 @@
     echo "0 results";
 }
 
-//echo $output;
+//echo $output[1]['question_id'];
+$output = json_encode($output, true);
+/*
+switch (json_last_error()) {
+    case JSON_ERROR_NONE:
+        echo ' - No errors';
+    break;
+    case JSON_ERROR_DEPTH:
+        echo ' - Maximum stack depth exceeded';
+    break;
+    case JSON_ERROR_STATE_MISMATCH:
+        echo ' - Underflow or the modes mismatch';
+    break;
+    case JSON_ERROR_CTRL_CHAR:
+        echo ' - Unexpected control character found';
+    break;
+    case JSON_ERROR_SYNTAX:
+        echo ' - Syntax error, malformed JSON';
+    break;
+    case JSON_ERROR_UTF8:
+        echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+    break;
+    default:
+        echo ' - Unknown error';
+    break;
+}
+*/
 
-echo json_encode($output, true);
+echo $output;
+
 mysqli_close($conn);
 ?>

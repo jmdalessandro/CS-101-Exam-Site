@@ -17,6 +17,10 @@ function setDisplay(div, displayOpt) {
   d.style.display = opt;
 }
 
+function trackScore() {
+
+}
+
 function submitQuestion() {
   const form = {
     topic: document.getElementById('topic'),
@@ -64,7 +68,8 @@ function submitQuestion() {
     requestData["difficulty"] = form.difficulty.value;
     requestData["constraint"] = form.constraint.value;
     }
-    console.log(requestData);
+    //console.log(requestData);
+    console.log(JSON.stringify(requestData));
     request.open("post", "createQuestion.php");
     request.setRequestHeader('Content-type', 'application/json'); // didnt include 'application/... in the options'
     request.send(JSON.stringify(requestData));
@@ -368,8 +373,136 @@ function makeGradedExam(button) {
     var examName = button.innerHTML;
     var requestData = {};
     requestData["examName"] = examName;
-    console.log(requestData);
+    requestData = JSON.stringify(requestData);
     const request = new XMLHttpRequest();
+
+    request.onload = function() {
+      var responseObj;
+
+      try {
+          responseObj = JSON.parse(request.responseText);
+        } catch (e) {
+          console.error('could not parse json');
+          console.log("response text: " + request.reponseText);
+        }
+        if (responseObj) {
+          handleResponse(responseObj);
+        }
+      };
+
+    request.open("POST", "makeGradedExam.php");
+    request.setRequestHeader('Content-Type','application/json');
+    request.send(requestData);
+
+    function handleResponse(responseObj) {
+      if (responseObj.msg == 'got graded exam') { //create exam here
+        //var examInfo = JSON.stringify(responseObj); 
+        var examInfo = responseObj;
+        console.log("Exam object:\n");
+        console.log(examInfo);
+        if (typeof examInfo.partials !== "undefined") {
+          partial1 = examInfo.partials[1].split(",");
+          partial2 = examInfo.partials[2].split(",");
+          partial3 = examInfo.partials[3].split(",");
+        }
+        //partial1 = examInfo.partials[1].split(",");
+        //partial2 = examInfo.partials[2].split(",");
+        //partial3 = examInfo.partials[3].split(",");
+        SwapDivs('examList', 'reviewExamContainer');
+
+        //building table 
+        var examContainer = document.getElementById("reviewExamContainer");
+        var examTitle = document.createElement("H1");
+        examTitle.setAttribute("id", "examName");
+        var examTitleText = document.createTextNode(examInfo.exam_name); 
+        examTitle.appendChild(examTitleText);
+        examContainer.appendChild(examTitle);
+        var table = document.getElementById('tabularExamReview'); //get table from html
+        //insert headers
+        var newRow = table.insertRow(table.length),
+            cell1 = newRow.insertCell(0),
+            cell2 = newRow.insertCell(1),
+            cell3 = newRow.insertCell(2),
+            cell4 = newRow.insertCell(3),
+            cell5 = newRow.insertCell(4),
+            cell6 = newRow.insertCell(5);
+            cell1.innerHTML = "Question";
+            cell2.innerHTML = "Student Answer";
+            cell3.innerHTML = "Comments";
+            cell4.innerHTML = "Partial Scores";
+            cell5.innerHTML = "Your Score";
+            cell6.innerHTML = "Total Score Possible";
+
+        //first question
+          var newRow = table.insertRow(table.length),
+            cell1 = newRow.insertCell(0),
+            cell2 = newRow.insertCell(1),
+            cell3 = newRow.insertCell(2),
+            cell4 = newRow.insertCell(3),
+            cell5 = newRow.insertCell(4),
+            cell6 = newRow.insertCell(5);
+            cell1.innerHTML = examInfo.exam_questions[1];
+            cell1.setAttribute("name", "exam_questions");
+            cell2.innerHTML = "<textarea rows='10' cols='35' disabled>" + examInfo.exam_answers[1] + "</textarea>";
+            cell3.innerHTML = "<textarea rows='15' cols='35'>" + examInfo.exam_comments[0] + "\n\n" + examInfo.exam_comments[1] +
+                              "\n\n" + examInfo.exam_comments[2] + "\n\n" + examInfo.exam_comments[3] + "\n\n" + examInfo.exam_comments[4] + "</textarea>";
+            cell4.innerHTML = "<table><tr><td><input type='text' name='editPartial' value='" + partial1[0] + "'></td></tr>";
+            cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[1] + "'></td></tr>";
+            cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[2] + "'></td></tr>";
+            cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[3] + "'></td></tr>";
+            if (typeof partial1[4] !== "undefined") {
+              cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[4] + "'></td></tr>";
+            }
+            //dont pull this from the database, instead just add it up from the partials
+            cell5.innerHTML = "<input type='text' name='editScore' value='" + (parseFloat(partial1[0]) + parseFloat(partial1[0])) + "'disabled>"; 
+            cell6.innerHTML = "<input type='text' name='editTotal' value='" + examInfo.totalScore[1] + "'>";
+        
+        //cell3.innerHTML = examInfo.exam_comments;
+        var footerDiv = document.querySelector("div.footer");
+        var footer = document.createElement("div");
+        var commentBox = document.createElement("TEXTAREA");
+        commentBox.setAttribute("id","addComments");
+        commentBox.cols = "50";
+        commentBox.rows = "20";
+        commentBox.style.width = "100%";
+        commentBox.setAttribute("placeholder","Enter additional comments here...");
+        footer.appendChild(commentBox);
+        var releaseBtn = document.createElement("BUTTON");
+        var btnName = document.createTextNode("Release Exam");
+        releaseBtn.appendChild(btnName);
+        releaseBtn.setAttribute("type", "button");
+        releaseBtn.setAttribute("id", "releaseBtn");
+        releaseBtn.setAttribute("onclick", "releaseGrades();");
+        footer.appendChild(releaseBtn);
+        footerDiv.appendChild(footer);
+      }
+      else {
+        console.log("failed!" + request.responseText);
+      }
+    }
+}
+
+function releaseGrades() {
+    var msg = document.getElementById("notifs");
+    var examName = document.getElementById("examName");
+    var partialArr = [], scoreArr = [], totalArr = [];
+    var partialObj = document.getElementsByName("editPartial"),
+        partialCount = partialObj.length;
+    for (var i = 0; i < partialCount; i++) {
+      partialArr.push(partialObj[i].value);
+    } 
+    var scoreObj = document.getElementsByName("editScore"),
+        scoreCount = scoreObj.length;
+    for (var i = 0; i < scoreCount; i++) {
+      scoreArr.push(scoreObj[i].value);
+    }
+    var addComments = document.getElementById("addComments");
+    const requestData = "{\"examName\":\"" + examName.innerHTML + "\",\"addComments\":\"" + addComments.value + "\",\"partialScore\":\"" + 
+                          partialArr + "\",\"score\":\"" + scoreArr + "\"}";
+    console.log(requestData);
+    
+    //AJAX
+     const request = new XMLHttpRequest();
 
     request.onload = function() {
       let responseObj = null;
@@ -385,58 +518,13 @@ function makeGradedExam(button) {
         }
       };
 
-    request.open("POST", "makeGradedExam.php");
+    request.open("POST", "submitGradedExam.php");
     request.setRequestHeader('Content-type','application/json');
-    request.send(JSON.stringify(requestData));
-
+    request.send(requestData);
+    
     function handleResponse(responseObj) {
-      if (responseObj.msg == 'got graded exam') { //create exam here
-        //console.log("success!" + request.responseText);
-        var examInfo = responseObj; 
-        
-        console.log(examInfo);
-        SwapDivs('examList', 'reviewExamContainer');
-        var examContainer = document.getElementById("reviewExamContainer");
-        var examTitle = document.createElement("H1");
-        examTitle.setAttribute("id", "examName");
-        var examTitleText = document.createTextNode(examInfo.exam_name); 
-        examTitle.appendChild(examTitleText);
-        examContainer.appendChild(examTitle);
-        var table = document.getElementById('tabularExamReview'); //get table from html
-        //insert headers
-        var newRow = table.insertRow(table.length),
-            cell1 = newRow.insertCell(0),
-            cell2 = newRow.insertCell(1),
-            cell3 = newRow.insertCell(2),
-            cell4 = newRow.insertCell(3);
-            cell1.innerHTML = "Question";
-            cell2.innerHTML = "Student Answer";
-            cell3.innerHTML = "Comments";
-            cell4.innerHTML = "Scores";
-            cell4.setAttribute("colspan", "3");
-        for (var i = 1; i <= 3; i++ ) {
-          var newRow = table.insertRow(table.length),
-            cell1 = newRow.insertCell(0),
-            cell2 = newRow.insertCell(1),
-            cell3 = newRow.insertCell(2),
-            cell4 = newRow.insertCell(3),
-            cell5 = newRow.insertCell(4),
-            cell6 = newRow.insertCell(5);
-            cell1.innerHTML = examInfo.exam_questions[i];
-            cell1.setAttribute("name", "exam_questions");
-            cell2.innerHTML = examInfo.exam_answers[i];
-            cell3.innerHTML = examInfo.exam_comments;
-            cell4.innerHTML = examInfo.partials[i];
-            cell5.innerHTML = examInfo.exam_scores[i];
-            cell6.innerHTML = examInfo.totalScore[i];
-        }
-        var releaseBtn = document.createElement("BUTTON");
-        releaseBtn.setAttribute("type", "button");
-        releaseBtn.setAttribute("id", "releaseBtn");
-      }
-      else {
-        console.log("failed!" + request.responseText);
-      }
+      console.log(responseObj);
+      console.log('request went through');
     }
 }
 

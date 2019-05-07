@@ -17,8 +17,12 @@ function setDisplay(div, displayOpt) {
   d.style.display = opt;
 }
 
-function trackScore() {
-
+function trackPartial(row) {
+  var sum = 0;
+  for (var i = 1; i < 10; i+=2) {
+    sum += document.getElementById("tabularExamReview").rows[row].cells[3].childNodes[i].rows[0].cells[0].childNodes[0].value*1;
+  }
+  document.getElementById("tabularExamReview").rows[row].cells[4].childNodes[0].value = sum;
 }
 
 function submitQuestion() {
@@ -444,20 +448,74 @@ function makeGradedExam(button) {
             cell1.innerHTML = examInfo.exam_questions[1];
             cell1.setAttribute("name", "exam_questions");
             cell2.innerHTML = "<textarea rows='10' cols='35' disabled>" + examInfo.exam_answers[1] + "</textarea>";
-            cell3.innerHTML = "<textarea rows='15' cols='35'>" + examInfo.exam_comments[0] + "\n\n" + examInfo.exam_comments[1] +
-                              "\n\n" + examInfo.exam_comments[2] + "\n\n" + examInfo.exam_comments[3] + "\n\n" + examInfo.exam_comments[4] + "</textarea>";
-            cell4.innerHTML = "<table><tr><td><input type='text' name='editPartial' value='" + partial1[0] + "'></td></tr>";
-            cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[1] + "'></td></tr>";
-            cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[2] + "'></td></tr>";
-            cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[3] + "'></td></tr>";
-            if (typeof partial1[4] !== "undefined") {
-              cell4.innerHTML += "<table><tr><td><input type='text' name='editPartial' value='" + partial1[4] + "'></td></tr>";
+            cell3.innerHTML = "<textarea rows='15' cols='35' name='qComments'>" + "1. " + examInfo.exam_comments[0] + "\n\n2." + examInfo.exam_comments[1] +
+                              "\n\n3." + examInfo.exam_comments[2] + "\n\n4." + examInfo.exam_comments[3] + "\n\n5." + examInfo.exam_comments[4] + "</textarea>";
+            cell4.innerHTML = "1.<table><tr><td><input type='text' name='editPartial' value='" + partial1[0] + "' onkeyup='trackPartial(1)'></td></tr>";
+            cell4.innerHTML += "2.<table><tr><td><input type='text' name='editPartial' value='" + partial1[1] + "' onkeyup='trackPartial(1)'></td></tr>";
+            cell4.innerHTML += "3.<table><tr><td><input type='text' name='editPartial' value='" + partial1[2] + "' onkeyup='trackPartial(1)'></td></tr>";
+            cell4.innerHTML += "4.<table><tr><td><input type='text' name='editPartial' value='" + partial1[3] + "' onkeyup='trackPartial(1)'></td></tr>";
+            if (typeof partial1[4] === "undefined") {
+              cell4.innerHTML += "5.<table><tr><td><input type='text' name='editPartial' value='" + partial1[4] + "' disabled></td></tr>";
+            }
+            else if (typeof partial1[4] !== "undefined") {
+              cell4.innerHTML += "5. <table><tr><td><input type='text' name='editPartial' value='" + partial1[4] + "' onkeyup='trackPartial(3)'></td></tr>";
             }
             //dont pull this from the database, instead just add it up from the partials
-            cell5.innerHTML = "<input type='text' name='editScore' value='" + (parseFloat(partial1[0]) + parseFloat(partial1[0])) + "'disabled>"; 
+            cell5.innerHTML = "<input type='text' name='editScore' value='" + examInfo.exam_scores[1] + "' >"; 
             cell6.innerHTML = "<input type='text' name='editTotal' value='" + examInfo.totalScore[1] + "'>";
+            
+        //second question
+          var newRow = table.insertRow(table.length),
+            cell1 = newRow.insertCell(0),
+            cell2 = newRow.insertCell(1),
+            cell3 = newRow.insertCell(2),
+            cell4 = newRow.insertCell(3),
+            cell5 = newRow.insertCell(4),
+            cell6 = newRow.insertCell(5);
+            cell1.innerHTML = examInfo.exam_questions[2];
+            cell1.setAttribute("name", "exam_questions");
+            cell2.innerHTML = "<textarea rows='10' cols='35' disabled>" + examInfo.exam_answers[2] + "</textarea>";
+            cell3.innerHTML = "<textarea rows='15' cols='35' name='qComments'>" + "1. " + examInfo.exam_comments[5] + "\n\n2." + examInfo.exam_comments[6] +
+                              "\n\n3." + examInfo.exam_comments[7] + "\n\n4." + examInfo.exam_comments[8] + "\n\n5." + examInfo.exam_comments[9] + "</textarea>";
+            cell4.innerHTML = "1.<table><tr><td><input type='text' name='editPartial' value='" + partial2[0] + "' onkeyup='trackPartial(2)'></td></tr>";
+            cell4.innerHTML += "2.<table><tr><td><input type='text' name='editPartial' value='" + partial2[1] + "' onkeyup='trackPartial(2)'></td></tr>";
+            cell4.innerHTML += "3.<table><tr><td><input type='text' name='editPartial' value='" + partial2[2] + "' onkeyup='trackPartial(2)'></td></tr>";
+            cell4.innerHTML += "4.<table><tr><td><input type='text' name='editPartial' value='" + partial2[3] + "' onkeyup='trackPartial(2)'></td></tr>";
+            if (typeof partial2[4] === "undefined") {
+              cell4.innerHTML += "5.<table><tr><td><input type='text' name='editPartial' value='" + partial2[4] + "' disabled></td></tr>";
+            }
+            else if (typeof partial2[4] !== "undefined") {
+              cell4.innerHTML += "5. <table><tr><td><input type='text' name='editPartial' value='" + partial2[4] + "' onkeyup='trackPartial(2)'></td></tr>";
+            }
+            cell5.innerHTML = "<input type='text' name='editScore' value='" + examInfo.exam_scores[2] + "' >"; 
+            cell6.innerHTML = "<input type='text' name='editTotal' value='" + examInfo.totalScore[2] + "'>";
         
-        //cell3.innerHTML = examInfo.exam_comments;
+        //third question
+        var newRow = table.insertRow(table.length),
+            cell1 = newRow.insertCell(0),
+            cell2 = newRow.insertCell(1),
+            cell3 = newRow.insertCell(2),
+            cell4 = newRow.insertCell(3),
+            cell5 = newRow.insertCell(4),
+            cell6 = newRow.insertCell(5);
+            cell1.innerHTML = examInfo.exam_questions[3];
+            cell1.setAttribute("name", "exam_questions");
+            cell2.innerHTML = "<textarea rows='10' cols='35' disabled>" + examInfo.exam_answers[3] + "</textarea>";
+            cell3.innerHTML = "<textarea rows='15' cols='35' name='qComments'>" + "1. " + examInfo.exam_comments[10] + "\n\n2." + examInfo.exam_comments[11] +
+                              "\n\n3." + examInfo.exam_comments[12] + "\n\n4." + examInfo.exam_comments[13] + "\n\n5." + examInfo.exam_comments[14] + "</textarea>";
+            cell4.innerHTML = "1. <table><tr><td><input type='text' name='editPartial' value='" + partial3[0] + "' onkeyup='trackPartial(3)'></td></tr>";
+            cell4.innerHTML += "2. <table><tr><td><input type='text' name='editPartial' value='" + partial3[1] + "' onkeyup='trackPartial(3)'></td></tr>";
+            cell4.innerHTML += "3. <table><tr><td><input type='text' name='editPartial' value='" + partial3[2] + "' onkeyup='trackPartial(3)'></td></tr>";
+            cell4.innerHTML += "4. <table><tr><td><input type='text' name='editPartial' value='" + partial3[3] + "' onkeyup='trackPartial(3)'></td></tr>";
+            if (typeof partial3[4] === "undefined") {
+              cell4.innerHTML += "5. <table><tr><td><input type='text' name='editPartial' value='" + partial3[4] + "' disabled></td></tr>";
+            }
+            else if (typeof partial3[4] !== "undefined") {
+              cell4.innerHTML += "5. <table><tr><td><input type='text' name='editPartial' value='" + partial3[4] + "' onkeyup='trackPartial(3)'></td></tr>";
+            }
+            cell5.innerHTML = "<input type='text' name='editScore' value='" + examInfo.exam_scores[3] + "' >"; 
+            cell6.innerHTML = "<input type='text' name='editTotal' value='" + examInfo.totalScore[3] + "'>";
+            
         var footerDiv = document.querySelector("div.footer");
         var footer = document.createElement("div");
         var commentBox = document.createElement("TEXTAREA");
@@ -483,22 +541,36 @@ function makeGradedExam(button) {
 }
 
 function releaseGrades() {
-    var msg = document.getElementById("notifs");
+    const form = {
+    msg: document.getElementById('notifs')
+    }
     var examName = document.getElementById("examName");
-    var partialArr = [], scoreArr = [], totalArr = [];
+    var table = document.getElementById("tabularExamReview");
+    var partialArr = [], scoreArr = [], totalArr = [], commentsArr = [];
     var partialObj = document.getElementsByName("editPartial"),
         partialCount = partialObj.length;
     for (var i = 0; i < partialCount; i++) {
-      partialArr.push(partialObj[i].value);
+      partialArr[i] = partialObj[i].value;
     } 
+    
     var scoreObj = document.getElementsByName("editScore"),
         scoreCount = scoreObj.length;
     for (var i = 0; i < scoreCount; i++) {
-      scoreArr.push(scoreObj[i].value);
+      scoreArr[i] = scoreObj[i].value;
     }
+    var bslashQ = "\"";
+    var commentObj = document.getElementsByName("qComments");
+    for (var i = 0; i < table.rows.length - 1; i++) {
+      commentsArr.push(commentObj[i].value);
+    }
+    
+    commentsArr = commentsArr.join();
+    commentsArr = JSON.stringify(commentsArr);
+    
     var addComments = document.getElementById("addComments");
-    const requestData = "{\"examName\":\"" + examName.innerHTML + "\",\"addComments\":\"" + addComments.value + "\",\"partialScore\":\"" + 
-                          partialArr + "\",\"score\":\"" + scoreArr + "\"}";
+    
+    const requestData = "{\"examName\":\"" + examName.innerHTML + "\" ,\"addComments\":\"" + addComments.value + "\" ,\"partialScore\":\"" + 
+                          partialArr + "\" ,\"score\":\"" + scoreArr + "\" ,\"qComments\":" + commentsArr + "}";
     console.log(requestData);
     
     //AJAX
@@ -525,6 +597,26 @@ function releaseGrades() {
     function handleResponse(responseObj) {
       console.log(responseObj);
       console.log('request went through');
+      if (responseObj.msg == 'Updated') {
+        while (form.msg.firstChild) {
+          form.msg.removeChild(form.msg.firstChild);
+        }
+            const li = document.createElement('li');
+            li.textContent = 'Exam was released!';
+            form.msg.appendChild(li);
+
+        form.msg.style.display = "block";
+      }
+      if (responseObj.msg == 'Not updated') {
+        while (form.msg.firstChild) {
+          form.msg.removeChild(form.msg.firstChild);
+        }
+            const li = document.createElement('li');
+            li.textContent = 'Exam was not released!';
+            form.msg.appendChild(li);
+
+        form.msg.style.display = "block";
+      }
     }
 }
 

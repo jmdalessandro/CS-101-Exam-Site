@@ -1,0 +1,36 @@
+  textarea {
+    resize: none;
+  }
+  
+  #examList {
+    align-self: center;
+    
+  }
+  
+  #examsTable {
+    align-self: center;
+    border: 1px black solid;
+  }
+
+  #tabularExamReview td{
+      align-self: center;
+      align-content: center;
+      border: 2px black solid;
+      border-collapse: collapse;
+      /*white-space: pre-wrap;*/
+  }
+  
+  #tabularExamReview th {
+      text-align: center;
+  }
+  
+  #releaseButton {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }

@@ -20,11 +20,28 @@
 }
 
 /*teacher css page*/
+
 .navigation {
   background-color: lightgrey;
   margin: auto;
-  margin-bottom: 10px;
-  padding: 20px;
+  margin-bottom: auto;
+  padding: 30px;
+}
+
+button {
+  background-color: #555;
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+  padding: 15px 26px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+  width: auto;
+}
+
+button:hover {
+  background: green;
 }
 
 li {
@@ -45,13 +62,14 @@ li {
 
 .row {
   display: flex;
+  /*display: none;*/
   height: 100%;
 }
 
 /* left column */
 
 .exam-editor {
-  background-color: tomato;
+  background-color: lightgreen;
   height: 100%;
   width: 50%;
   display: block;
@@ -59,8 +77,10 @@ li {
 
 #create-question {
   display: none;
-
 }
+
+
+
 #create-exam { /*shows up first when laoded*/
   display: block;
 }
@@ -83,7 +103,7 @@ li {
 
 #question-databank {
   display: none;
-  background-color: cyan;
+  background-color: lightskyblue;
   flex: 50%;
   height: 100%;
 }
@@ -93,12 +113,18 @@ li {
 
 table {
   border-collapse: collapse;
+  width: auto;
 }
 
-table, th, td {
+th {
+  border-top: 1px solid black;
+  text-align: center;
+}
+
+td {
+  text-align: center;
   border: 1px solid black;
 }
-
 .selected {
   color: red;
 }
@@ -110,7 +136,7 @@ table, th, td {
 
 #exam-preview { /*shows up first when laoded*/
   display: block;
-  background-color: cyan;
+  background-color: lightskyblue;
   flex: 50%;
   height: 100%;
 }
@@ -121,3 +147,6 @@ table, th, td {
   right: 0;
   transform: translateY(-80px);
 }
+
+/*release grades page */
+

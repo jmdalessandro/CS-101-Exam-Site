@@ -1,6 +1,6 @@
 <?php
  
- //mysql credentials
+ //mysql credentials 
   $dbhost = "sql1.njit.edu";
   $dbuser = "hy276";
   $dbpass = "FbRHBUeZ";

@@ -1,3 +1,5 @@
+//
+
 <?php
 $finalGrade_url = 'https://web.njit.edu/~hy276/beta/back/addGrade.php';
 $gradingData_url = 'https://web.njit.edu/~hy276/beta/back/getGradingData.php';
